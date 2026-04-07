@@ -6,5 +6,13 @@ export type TripItem = {
   endTime: string;
   startLocation: string;
   endLocation: string;
-  availableSeats: number;
+  availableTickets: number;
+  description?: string;
+};
+
+export type TripRequestFilter = {
+  pickup: string;
+  destination: string;
+  seats_limit: string;
+  date_of_journey: string;
 };
