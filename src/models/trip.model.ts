@@ -1,4 +1,4 @@
-export type TripItem = {
+export type TripListItem = {
   id: string;
   busNumber: string;
   date: string;
@@ -7,8 +7,9 @@ export type TripItem = {
   startLocation: string;
   endLocation: string;
   availableTickets: number;
-  description?: string;
 };
+
+export type TripList = TripListItem[]
 
 export type TripRequestFilter = {
   pickup: string;
