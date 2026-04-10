@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch src/app.ts",
+    "build": "tsc",
+    "start": "node dist/app.js"
   },
   "repository": {
     "type": "git",
@@ -13,7 +15,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/p-sholomitskiy/globusbus-tracker-bot/issues"
   },
@@ -24,6 +26,8 @@
     "typescript": "^6.0.2"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.103.0",
+    "cheerio": "^1.2.0",
     "dotenv": "^17.4.1",
     "grammy": "^1.42.0",
     "grammy-scenes": "^10.2.0"
