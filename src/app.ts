@@ -1,15 +1,22 @@
-import { getLocationList } from './db/locations.repo.js';
-import { getHtmlByFilter } from './parser/fetcher.parser.js';
-import { performParse } from './parser/performer.parser.js';
+import { bot } from './bot/app.bot.js';
+import { mainStage } from './bot/stage.bot.ts/mainStage.bot.js';
+import { BotSceneExecutionResult, BotSceneNameList, type BotCustomContext, type SessionData } from './models/bot.models.js';
+import { session } from 'grammy';
 
-const html = await getHtmlByFilter({
-  pickup: '139',
-  destination: '34',
-  seats_limit: '1',
-  date_of_journey: '11.04.2026',
-});
+bot.use(session({
+    initial: (): SessionData => ({
+      currentSceneIndex: 0,
+      currentSceneExecutionResult: BotSceneExecutionResult.NEXT,
+      
+    })
+}));
 
-const data = performParse(html!)
-const locations = await  getLocationList();
+bot.use(mainStage.manager())
+bot.use(mainStage)
 
-console.log(locations);
+bot.command('track', async (ctx) => {
+  return ctx.scenes.enter(BotSceneNameList.START_LOCATION_SCENE)
+})
+
+
+bot.start();

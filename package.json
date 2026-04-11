@@ -21,9 +21,15 @@
   },
   "homepage": "https://github.com/p-sholomitskiy/globusbus-tracker-bot#readme",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/eslint__js": "^8.42.3",
     "@types/node": "^25.6.0",
+    "@typescript-eslint/eslint-plugin": "^8.58.1",
+    "@typescript-eslint/parser": "^8.58.1",
+    "eslint": "^10.2.0",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.1"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.0",
