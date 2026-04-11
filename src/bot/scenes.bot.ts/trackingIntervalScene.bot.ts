@@ -8,7 +8,7 @@ trackingIntervalScene.step(async (ctx) => {
     await ctx.reply('Enter interval')
 })
 
-trackingIntervalScene.wait('endLocation').on('message:text', async (ctx) => {
+trackingIntervalScene.wait('trackingInterval').on('message:text', async (ctx) => {
     ctx.session.enteredTrackInterval = Number(ctx.message.text);
     ctx.session.currentSceneExecutionResult = BotSceneExecutionResult.NEXT;
 

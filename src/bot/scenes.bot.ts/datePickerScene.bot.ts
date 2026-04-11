@@ -8,7 +8,7 @@ datePickerScene.step(async (ctx) => {
     await ctx.reply('Enter the date')
 })
 
-datePickerScene.wait('endLocation').on('message:text', async (ctx) => {
+datePickerScene.wait('datePicker').on('message:text', async (ctx) => {
     ctx.session.enteredDate = ctx.message.text;
     ctx.session.currentSceneExecutionResult = BotSceneExecutionResult.NEXT;
 
