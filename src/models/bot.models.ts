@@ -7,7 +7,6 @@ export type SessionData = ScenesSessionData & {
     enteredDate?: string,
     enteredTrackInterval?: number,
     currentSceneIndex: number,
-    currentSceneExecutionResult: BotSceneExecutionResult
 }
 export type BotCustomContext = Context & SessionFlavor<SessionData> & ScenesFlavor
 
@@ -16,10 +15,4 @@ export enum BotSceneNameList {
     END_LOCATION_SCENE = 'endLocationScene',
     DATE_PICKER_SCENE = 'datePickerScene',
     TRACKING_INTERVAL_SCENE = 'trackingIntervalScene',
-}
-
-export enum BotSceneExecutionResult {
-    NEXT = 'next',
-    PREV = 'previous',
-    STAY = 'stay'
 }

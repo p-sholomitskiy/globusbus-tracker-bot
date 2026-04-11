@@ -1,25 +1,27 @@
-import { BotSceneExecutionResult, BotSceneNameList, type BotCustomContext } from "../../models/bot.models.js";
+import { BotSceneNameList, type BotCustomContext } from "../../models/bot.models.js";
 import { stageOrder } from "../stage.bot.ts/mainStage.bot.js";
 
-export const getNextScene = async (ctx: BotCustomContext): Promise<BotSceneNameList | null> => {
+export const sceneRouter = async (ctx: BotCustomContext) => {
+    const currentIndex = ctx.session.currentSceneIndex;
 
-    let newIndex = ctx.session.currentSceneIndex;
+    const getSceneAtIndex = (index: number): BotSceneNameList | null => {
+        if (index < 0 || index >= stageOrder.length) {
+            return null;
+        }
+        return stageOrder[index] ?? null;
+    };
 
-    switch (ctx.session.currentSceneExecutionResult) {
+    const updateIndex = (newIndex: number): BotSceneNameList | null => {
+        const scene = getSceneAtIndex(newIndex);
+        if (scene) {
+            ctx.session.currentSceneIndex = newIndex;
+        }
+        return scene;
+    };
 
-        case BotSceneExecutionResult.NEXT:
-            newIndex++;
-            break;
-
-        case BotSceneExecutionResult.PREV:
-            newIndex--;
-            break;
-    }
-
-    const nextScene = stageOrder[newIndex];
-    if (!nextScene) return null;
-
-    ctx.session.currentSceneIndex = newIndex;
-
-    return nextScene;
+    return {
+        next: () => updateIndex(currentIndex + 1),
+        prev: () => updateIndex(currentIndex - 1),
+        current: () => stageOrder[currentIndex],
+    };
 };

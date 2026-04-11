@@ -1,14 +1,12 @@
 import { bot } from './bot/app.bot.js';
 import { mainStage } from './bot/stage.bot.ts/mainStage.bot.js';
-import { BotSceneExecutionResult, BotSceneNameList, type BotCustomContext, type SessionData } from './models/bot.models.js';
+import { BotSceneNameList, type BotCustomContext, type SessionData } from './models/bot.models.js';
 import { session } from 'grammy';
 
 bot.use(session({
-    initial: (): SessionData => ({
-      currentSceneIndex: 0,
-      currentSceneExecutionResult: BotSceneExecutionResult.NEXT,
-      
-    })
+  initial: (): SessionData => ({
+    currentSceneIndex: 0,
+  })
 }));
 
 bot.use(mainStage.manager())

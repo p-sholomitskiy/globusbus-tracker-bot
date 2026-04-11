@@ -1,6 +1,6 @@
 import { Scene } from "grammy-scenes";
-import { BotSceneExecutionResult, BotSceneNameList, type BotCustomContext } from "../../models/bot.models.js";
-import { getNextScene } from "./router.bot.js";
+import { BotSceneNameList, type BotCustomContext } from "../../models/bot.models.js";
+import { sceneRouter } from "./router.bot.js";
 
 export const startLocationScene = new Scene<BotCustomContext>(BotSceneNameList.START_LOCATION_SCENE);
 
@@ -10,9 +10,9 @@ startLocationScene.step(async (ctx) => {
 
 startLocationScene.wait('startLocation').on('message:text', async (ctx) => {
     ctx.session.enteredStartLocation = ctx.message.text;
-    ctx.session.currentSceneExecutionResult = BotSceneExecutionResult.NEXT
 
-    const nextScene = await getNextScene(ctx);
+    const router = await sceneRouter(ctx)
+    const nextScene = router.next();
     if (nextScene === null) {
         ctx.scene.exit()
     }
