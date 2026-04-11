@@ -1,5 +1,5 @@
-import { SUPERBUS_SEARCH_URL } from '../constants';
-import { TripRequestFilter } from '../models/trip.model';
+import { SUPERBUS_SEARCH_URL } from '../constants.js';
+import type { TripRequestFilter } from '../models/trip.model.js';
 
 export const getHtmlByFilter = async (filterPayload: TripRequestFilter) => {
   try {

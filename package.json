@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/p-sholomitskiy/globusbus-tracker-bot#readme",
   "devDependencies": {
-    "@types/node": "^25.5.2",
+    "@types/node": "^25.6.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2"
   },
