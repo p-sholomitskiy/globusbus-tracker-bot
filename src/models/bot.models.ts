@@ -1,8 +1,6 @@
-import type { Context, SessionFlavor } from "grammy";
-import type { ScenesFlavor, ScenesSessionData } from "grammy-scenes";
-import type { TripRequestFilter } from "./trip.model.js";
-import type { Message } from "grammy/types";
-import { text } from "node:stream/consumers";
+import type { Context, SessionFlavor } from 'grammy';
+import type { ScenesFlavor, ScenesSessionData } from 'grammy-scenes';
+import type { TripRequestFilter } from './trip.model.js';
 
 export type SessionData = ScenesSessionData & {
     enteredStartLocation?: string,
@@ -29,7 +27,7 @@ export const BotInlineKeyboardCommands = {
         text: 'Искать снова',
         callBackData: 'search_again',
     }
-} as const
+} as const;
 
 export const BotRequestIntervals = [
     {
@@ -49,4 +47,4 @@ export const BotRequestIntervals = [
         value: 30 * 60 * 1000,
     },
 
-]
+];

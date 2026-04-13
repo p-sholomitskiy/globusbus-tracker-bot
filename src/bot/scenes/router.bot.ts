@@ -1,5 +1,5 @@
-import { BotSceneNameList, type BotCustomContext } from "../../models/bot.models.js";
-import { stageOrder } from "../stage/mainStage.bot.js";
+import { BotSceneNameList, type BotCustomContext } from '../../models/bot.models.js';
+import { stageOrder } from '../stage/mainStage.bot.js';
 
 export const sceneRouter = async (ctx: BotCustomContext) => {
     const currentIndex = ctx.session.currentSceneIndex;

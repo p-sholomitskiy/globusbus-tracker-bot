@@ -1,6 +1,6 @@
-import { LocationTableColumnsName, type LocationList, type LocationTablePointColumnValue, type LocationTableRequestParams } from "../models/locations.model.js";
-import { RepositoryTables } from "../models/repo.model.js";
-import { supabase } from "./client.repo.js";
+import { LocationTableColumnsName, type LocationList, type LocationTableRequestParams } from '../models/locations.model.js';
+import { RepositoryTables } from '../models/repo.model.js';
+import { supabase } from './client.repo.js';
 
 export const getLocationListWithParams = async (params: LocationTableRequestParams): Promise<LocationList> => {
 
@@ -10,7 +10,7 @@ export const getLocationListWithParams = async (params: LocationTableRequestPara
             ${LocationTableColumnsName.ID},
             ${LocationTableColumnsName.NAME},
             ${LocationTableColumnsName.POINT},
-            ${LocationTableColumnsName.VALUE}`)
+            ${LocationTableColumnsName.VALUE}`);
     if (params.id) {
         query = query.eq(LocationTableColumnsName.ID, params.id);
     }
@@ -31,9 +31,9 @@ export const getLocationListWithParams = async (params: LocationTableRequestPara
     if (error) {
         console.log(error);
 
-        return []
+        return [];
     }
     else {
-        return data
+        return data;
     }
-}
+};

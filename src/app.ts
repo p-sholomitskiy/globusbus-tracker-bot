@@ -17,15 +17,15 @@ bot.use(session({
   })
 }));
 
-bot.use(mainStage.manager())
-bot.use(mainStage)
+bot.use(mainStage.manager());
+bot.use(mainStage);
 
 bot.command('track', async (ctx) => {
-  return ctx.scenes.enter(BotSceneNameList.START_LOCATION_SCENE)
-})
+  return ctx.scenes.enter(BotSceneNameList.START_LOCATION_SCENE);
+});
 
 
 bot.start();
 
-const data = await getLocationListWithParams({ name: 'ка', point: LocationTablePointColumnValue.DESTINATION })
+const data = await getLocationListWithParams({ name: 'ка', point: LocationTablePointColumnValue.DESTINATION });
 console.log(data);
