@@ -23,28 +23,28 @@ export enum BotSceneNameList {
 }
 
 export const BotInlineKeyboardCommands = {
-    SEARCH_AGAIN: {
-        text: 'Искать снова',
-        callBackData: 'search_again',
-    }
+	SEARCH_AGAIN: {
+		text: 'Искать снова',
+		callBackData: 'search_again',
+	}
 } as const;
 
 export const BotRequestIntervals = [
-    {
-        text: '1 минута',
-        value: 1 * 60 * 1000,
-    },
-    {
-        text: '5 минут',
-        value: 5 * 60 * 1000,
-    },
-    {
-        text: '15 минут',
-        value: 15 * 60 * 1000,
-    },
-    {
-        text: '30 минут',
-        value: 30 * 60 * 1000,
-    },
+	{
+		text: '1 минута',
+		value: 1 * 60 * 1000,
+	},
+	{
+		text: '5 минут',
+		value: 5 * 60 * 1000,
+	},
+	{
+		text: '15 минут',
+		value: 15 * 60 * 1000,
+	},
+	{
+		text: '30 минут',
+		value: 30 * 60 * 1000,
+	},
 
 ];

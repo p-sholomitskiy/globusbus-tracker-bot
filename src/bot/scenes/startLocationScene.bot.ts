@@ -10,50 +10,50 @@ export const startLocationScene = new Scene<BotCustomContext>(BotSceneNameList.S
 startLocationScene.label(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
 
 startLocationScene.step(async (ctx) => {
-    await ctx.reply('Введите название отправного пункта');
+	await ctx.reply('Введите название отправного пункта');
 });
 
 startLocationScene.wait('startLocation').on('message:text', async (ctx) => {
-    ctx.session.enteredStartLocation = ctx.message.text;
+	ctx.session.enteredStartLocation = ctx.message.text;
 
-    const foundLocations = await getLocationListWithParams({
-        name: ctx.session.enteredStartLocation,
-        point: LocationTablePointColumnValue.PICKUP
-    });
+	const foundLocations = await getLocationListWithParams({
+		name: ctx.session.enteredStartLocation,
+		point: LocationTablePointColumnValue.PICKUP
+	});
 
-    if (foundLocations.length === 0) {
-        await ctx.reply('Ничего не найдено, попробуйте снова');
-    } else {
-        const locationsKeyboard = createInlineKeyboardWithLocation(foundLocations);
-        const keyboardMessage = await ctx.reply('Найдены следующие пункты. Выберете пожалуйста', {
-            reply_markup: locationsKeyboard
-        });
-        ctx.session.keyboardMessageId = keyboardMessage.message_id;
-        ctx.session.chatId = keyboardMessage.chat.id;
+	if (foundLocations.length === 0) {
+		await ctx.reply('Ничего не найдено, попробуйте снова');
+	} else {
+		const locationsKeyboard = createInlineKeyboardWithLocation(foundLocations);
+		const keyboardMessage = await ctx.reply('Найдены следующие пункты. Выберете пожалуйста', {
+			reply_markup: locationsKeyboard
+		});
+		ctx.session.keyboardMessageId = keyboardMessage.message_id;
+		ctx.session.chatId = keyboardMessage.chat.id;
 
-        ctx.scene.resume();
-    }
+		ctx.scene.resume();
+	}
 
 });
 
 startLocationScene.wait('chooseLocation').on('callback_query:data', async (ctx) => {
-    await ctx.answerCallbackQuery();
-    const choice = ctx.callbackQuery.data;
-    console.log(choice);
+	await ctx.answerCallbackQuery();
+	const choice = ctx.callbackQuery.data;
+	console.log(choice);
 
-    if (choice === BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData) {
-        ctx.api.deleteMessage(ctx.session.chatId!, ctx.session.keyboardMessageId!);
-        ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
-    } else {
-        ctx.session.tripRequestFilter.pickup = choice;
-        const router = await sceneRouter(ctx);
-        const nextScene = router.next();
-        ctx.api.deleteMessage(ctx.session.chatId!, ctx.session.keyboardMessageId!);
-        if (nextScene === null) {
-            ctx.scene.exit();
-        }
-        else {
-            ctx.scene.enter(nextScene);
-        }
-    }
+	if (choice === BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData) {
+		ctx.api.deleteMessage(ctx.session.chatId!, ctx.session.keyboardMessageId!);
+		ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
+	} else {
+		ctx.session.tripRequestFilter.pickup = choice;
+		const router = await sceneRouter(ctx);
+		ctx.api.deleteMessage(ctx.session.chatId!, ctx.session.keyboardMessageId!);
+		const nextScene = router.next();
+		if (nextScene === null) {
+			ctx.scene.exit();
+		}
+		else {
+			ctx.scene.enter(nextScene);
+		}
+	}
 });

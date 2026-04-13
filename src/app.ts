@@ -6,22 +6,22 @@ import { session } from 'grammy';
 import { LocationTablePointColumnValue } from './models/locations.model.js';
 
 bot.use(session({
-  initial: (): SessionData => ({
-    currentSceneIndex: 0,
-    tripRequestFilter: {
-      pickup: '',
-      destination: '',
-      date_of_journey: '',
-      seats_limit: ''
-    }
-  })
+	initial: (): SessionData => ({
+		currentSceneIndex: 0,
+		tripRequestFilter: {
+			pickup: '',
+			destination: '',
+			date_of_journey: '',
+			seats_limit: ''
+		}
+	})
 }));
 
 bot.use(mainStage.manager());
 bot.use(mainStage);
 
 bot.command('track', async (ctx) => {
-  return ctx.scenes.enter(BotSceneNameList.START_LOCATION_SCENE);
+	return ctx.scenes.enter(BotSceneNameList.START_LOCATION_SCENE);
 });
 
 

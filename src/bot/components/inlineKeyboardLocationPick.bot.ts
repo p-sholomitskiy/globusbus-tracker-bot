@@ -3,12 +3,12 @@ import type { LocationList, LocationListItem } from '../../models/locations.mode
 import { BotInlineKeyboardCommands } from '../../models/bot.models.js';
 
 export const createInlineKeyboardWithLocation = (locationList: LocationList): InlineKeyboard => {
-    let keyboard = new InlineKeyboard();
-    locationList.forEach((locationListItem: LocationListItem) => {
-        keyboard = keyboard.text(`${locationListItem.name}`, `${locationListItem.value}`);
-    });
-    keyboard = keyboard.text(BotInlineKeyboardCommands.SEARCH_AGAIN.text, 
-        BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
+	let keyboard = new InlineKeyboard();
+	locationList.forEach((locationListItem: LocationListItem) => {
+		keyboard = keyboard.text(`${locationListItem.name}`, `${locationListItem.value}`);
+	});
+	keyboard = keyboard.text(BotInlineKeyboardCommands.SEARCH_AGAIN.text, 
+		BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
 
-    return keyboard;
+	return keyboard;
 };
