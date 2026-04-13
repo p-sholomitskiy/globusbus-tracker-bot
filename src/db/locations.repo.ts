@@ -2,7 +2,7 @@ import { LocationTableColumnsName, type LocationList, type LocationTableRequestP
 import { RepositoryTables } from '../models/repo.model.js';
 import { supabase } from './client.repo.js';
 
-export const getLocationListWithParams = async (params: LocationTableRequestParams): Promise<LocationList> => {
+export const getLocationListWithParams = async (params: LocationTableRequestParams): Promise<LocationList | null> => {
 
 	let query = supabase
 		.from(RepositoryTables.LOCATIONS)
@@ -31,7 +31,7 @@ export const getLocationListWithParams = async (params: LocationTableRequestPara
 	if (error) {
 		console.log(error);
 
-		return [];
+		return null;
 	}
 	else {
 		return data;

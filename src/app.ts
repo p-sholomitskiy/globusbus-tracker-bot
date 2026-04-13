@@ -26,6 +26,3 @@ bot.command('track', async (ctx) => {
 
 
 bot.start();
-
-const data = await getLocationListWithParams({ name: 'ка', point: LocationTablePointColumnValue.DESTINATION });
-console.log(data);

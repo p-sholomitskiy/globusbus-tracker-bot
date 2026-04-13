@@ -14,6 +14,7 @@ export default [
         },
 
         rules: {
+             "object-curly-spacing": ["error", "always"],
             indent: ["error", "tab"],
             semi: ["error", "always"],
             quotes: ["error", "single"],

@@ -21,6 +21,10 @@ endLocationScene.wait('startLocation').on('message:text', async (ctx) => {
 		point: LocationTablePointColumnValue.DESTINATION
 	});
 
+	if (foundLocations === null) {
+		return;
+	}
+
 	if (foundLocations.length === 0) {
 		await ctx.reply('Ничего не найдено, попробуйте снова');
 	} else {
