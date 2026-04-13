@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio';
+import type { Element } from 'domhandler';
 import type { TripList } from '../models/trip.model.js';
 
 export const performParse = (html: string) => {
@@ -14,7 +15,7 @@ export const performParse = (html: string) => {
   $('.tickets-item').each((_, block) => {
     const rawTripBlockItem = $(block);
 
-    const getTrimmedText = (element: cheerio.Cheerio<any>): string => {
+    const getTrimmedText = (element: cheerio.Cheerio<Element>): string => {
       return element.text().trim();
     };
 
