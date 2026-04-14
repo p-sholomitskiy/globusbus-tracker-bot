@@ -3,7 +3,10 @@ import type { Element } from 'domhandler';
 import type { TripList } from '../models/trip.model.js';
 import type { FetchResult } from '../models/parser.model.js';
 
-export const performParse = (fetchResult: FetchResult) => {
+export const performParse = (fetchResult: FetchResult): TripList => {
+	if (!fetchResult.html) {
+		return [];
+	}
 	const $ = cheerio.load(fetchResult.html);
 	const trips: TripList = [];
 	if ($('.tickets-item').text().trim() === 'Нет доступных рейсов') {

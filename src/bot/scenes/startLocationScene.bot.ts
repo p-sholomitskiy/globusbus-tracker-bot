@@ -47,18 +47,18 @@ startLocationScene.wait('chooseLocation').on('callback_query:data', async (ctx) 
 	const choice = ctx.callbackQuery.data;
 
 	if (!isActualCallback(ctx)) {
-		deleteKeyboardMessage(ctx);
+		await deleteKeyboardMessage(ctx);
 		return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
 	}
 
 	if (choice === BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData) {
-		deleteKeyboardMessage(ctx);
+		await deleteKeyboardMessage(ctx);
 		return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
 	}
 
 	ctx.session.tripRequestFilter.pickup = choice;
 	const router = await sceneRouter(ctx);
-	deleteKeyboardMessage(ctx);
+	await deleteKeyboardMessage(ctx);
 
 	const nextScene = router.next();
 

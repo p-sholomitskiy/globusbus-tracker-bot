@@ -8,7 +8,6 @@ export const trackingIntervalScene = new Scene<BotCustomContext>(BotSceneNameLis
 
 trackingIntervalScene.label(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
 
-
 trackingIntervalScene.step(async (ctx) => {
 	const intervalsKeyboard = createInlineKeyboardWithIntervals();
 	const keyboardMessage = await ctx.reply('Выберите интервал проверки', {
@@ -26,13 +25,21 @@ trackingIntervalScene.wait('chooseInterval').on('callback_query:data', async (ct
 	const choice = ctx.callbackQuery.data;
 
 	if (!isActualCallback(ctx)) {
-		deleteKeyboardMessage(ctx);
+		await deleteKeyboardMessage(ctx);
 		return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
 	}
 
 	const router = await sceneRouter(ctx);
-	deleteKeyboardMessage(ctx);
-	ctx.session.enteredTrackInterval = Number(choice);
+	await deleteKeyboardMessage(ctx);
+	
+	const interval = Number(choice);
+
+	if (Number.isNaN(interval)) {
+		await ctx.reply('Некорректный интервал. Попробуйте снова.');
+		return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
+	}
+	
+	ctx.session.enteredTrackInterval = interval;
 
 	const nextScene = router.next();
 
