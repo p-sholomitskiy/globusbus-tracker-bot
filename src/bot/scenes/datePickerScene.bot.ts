@@ -32,7 +32,7 @@ datePickerScene.wait('chooseDate').on('callback_query:data', async (ctx) => {
 
 	ctx.session.tripRequestFilter.date_of_journey = choice;
 	const router = await sceneRouter(ctx);
-	deleteKeyboardMessage(ctx);
+	await deleteKeyboardMessage(ctx);
 
 	const nextScene = router.next();
 

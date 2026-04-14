@@ -3,16 +3,18 @@ import type { BotCustomContext } from '../models/bot.models.js';
 export const deleteKeyboardMessage = async (ctx: BotCustomContext): Promise<void> => {
 	const { chatId, keyboardMessageId } = ctx.session;
 	
+	if (chatId === undefined || keyboardMessageId === undefined) {
+		return;
+	}
+
 	try {
-		if (chatId !== undefined && keyboardMessageId !== undefined) {
-			await ctx.api.deleteMessage(chatId, keyboardMessageId);
-		}	
-	} catch (error) {
-		console.log(error);
-	} finally {
+		await ctx.api.deleteMessage(chatId, keyboardMessageId);	
 		ctx.session.chatId = undefined;
 		ctx.session.keyboardMessageId = undefined;
-	}
+	} catch (error) {
+
+		console.error('Failed to delete keyboard message:', error);
+	} 
 };
 
 export const isActualCallback = (ctx: BotCustomContext) => {
