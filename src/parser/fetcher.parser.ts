@@ -8,11 +8,11 @@ export const getHtmlByFilter = async (filterPayload: TripRequestFilter) => {
 		if (!response.ok) {
 			throw new Error(`${response.status} ${response.statusText}`);
 		}
-		const data = await response.text();
+		const html = await response.text();
 
-		return data;
+		return { html, filter: filterPayload };
 	} catch (error) {
-		console.log(error);
+		console.error('Fetch error:', error);
 		return null;
 	}
 };

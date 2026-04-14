@@ -23,7 +23,8 @@ startLocationScene.wait('startLocation').on('message:text', async (ctx) => {
 	});
 
 	if (foundLocations === null) {
-		return;
+		await ctx.reply('При поиске возникла ошибка. Попробуйте еще раз.');
+		return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
 	}
 
 	if (foundLocations.length === 0) {

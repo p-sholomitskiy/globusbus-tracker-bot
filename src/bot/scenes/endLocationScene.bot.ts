@@ -4,6 +4,7 @@ import { sceneRouter } from './router.bot.js';
 import { getLocationListWithParams } from '../../db/locations.repo.js';
 import { LocationTablePointColumnValue } from '../../models/locations.model.js';
 import { createInlineKeyboardWithLocation } from '../components/inlineKeyboardLocationPick.bot.js';
+import { deleteKeyboardMessage, isActualCallback } from '../utils.bot.js';
 
 export const endLocationScene = new Scene<BotCustomContext>(BotSceneNameList.END_LOCATION_SCENE);
 
@@ -22,7 +23,8 @@ endLocationScene.wait('startLocation').on('message:text', async (ctx) => {
 	});
 
 	if (foundLocations === null) {
-		return;
+		await ctx.reply('При поиске возникла ошибка. Попробуйте еще раз.');
+		return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
 	}
 
 	if (foundLocations.length === 0) {
@@ -43,21 +45,26 @@ endLocationScene.wait('startLocation').on('message:text', async (ctx) => {
 endLocationScene.wait('chooseLocation').on('callback_query:data', async (ctx) => {
 	await ctx.answerCallbackQuery();
 	const choice = ctx.callbackQuery.data;
-	console.log(choice);
+
+	if(!isActualCallback(ctx)) {
+		deleteKeyboardMessage(ctx);
+		return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
+	}
 
 	if (choice === BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData) {
-		ctx.api.deleteMessage(ctx.session.chatId!, ctx.session.keyboardMessageId!);
-		ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
-	} else {
-		ctx.session.tripRequestFilter.destination = choice;
-		const router = await sceneRouter(ctx);
-		const nextScene = router.next();
-		ctx.api.deleteMessage(ctx.session.chatId!, ctx.session.keyboardMessageId!);
-		if (nextScene === null) {
-			ctx.scene.exit();
-		}
-		else {
-			ctx.scene.enter(nextScene);
-		}
+		deleteKeyboardMessage(ctx);
+		return ctx.api.deleteMessage(ctx.session.chatId!, ctx.session.keyboardMessageId!);
+	} 
+
+	ctx.session.tripRequestFilter.destination = choice;
+	const router = await sceneRouter(ctx);
+	deleteKeyboardMessage(ctx);
+
+	const nextScene = router.next();
+
+	if (nextScene === null) {
+		return ctx.scene.exit();
 	}
+
+	return ctx.scene.enter(nextScene);
 });

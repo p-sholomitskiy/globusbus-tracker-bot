@@ -11,19 +11,19 @@ export const getLocationListWithParams = async (params: LocationTableRequestPara
             ${LocationTableColumnsName.NAME},
             ${LocationTableColumnsName.POINT},
             ${LocationTableColumnsName.VALUE}`);
-	if (params.id) {
+	if (params.id !== undefined) {
 		query = query.eq(LocationTableColumnsName.ID, params.id);
 	}
 
-	if (params.name) {
+	if (params.name !== undefined) {
 		query = query.ilike(LocationTableColumnsName.NAME, `%${params.name}%`);
 	}
 
-	if (params.point) {
+	if (params.point !== undefined) {
 		query = query.eq(LocationTableColumnsName.POINT, params.point);
 	}
 
-	if (params.value) {
+	if (params.value !== undefined) {
 		query = query.eq(LocationTableColumnsName.VALUE, params.value);
 	}
 
