@@ -4,45 +4,46 @@ import { sceneRouter } from './router.bot.js';
 import { createInlineKeyboardWithDates } from '../components/inlineKeyboardDatePick.bot.js';
 import { deleteKeyboardMessage, isActualCallback } from '../utils.bot.js';
 
-export const datePickerScene = new Scene<BotCustomContext>(BotSceneNameList.DATE_PICKER_SCENE);
+export const datePickerScene = new Scene<BotCustomContext>(
+  BotSceneNameList.DATE_PICKER_SCENE,
+);
 
 datePickerScene.label(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
 
 datePickerScene.step(async (ctx) => {
-	const datesKeyboard = createInlineKeyboardWithDates();
+  const datesKeyboard = createInlineKeyboardWithDates();
 
-	const keyboardMessage = await ctx.reply('Выберите дату', {
-		reply_markup: datesKeyboard,
-	});
+  const keyboardMessage = await ctx.reply('Выберите дату', {
+    reply_markup: datesKeyboard,
+  });
 
-	ctx.session.keyboardMessageId = keyboardMessage.message_id;
-	ctx.session.chatId = keyboardMessage.chat.id;
+  ctx.session.keyboardMessageId = keyboardMessage.message_id;
+  ctx.session.chatId = keyboardMessage.chat.id;
 
-	ctx.scene.resume();
+  ctx.scene.resume();
 });
 
 datePickerScene.wait('chooseDate').on('callback_query:data', async (ctx) => {
-	await ctx.answerCallbackQuery();
-	const choice = ctx.callbackQuery.data;
-	console.log(choice);
+  await ctx.answerCallbackQuery();
+  const choice = ctx.callbackQuery.data;
+  console.log(choice);
 
-	if (!isActualCallback(ctx)) {
-		await deleteKeyboardMessage(ctx);
-		return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
-	}
+  if (!isActualCallback(ctx)) {
+    await deleteKeyboardMessage(ctx);
+    return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
+  }
 
-	ctx.session.enteredDate = choice;
-	ctx.session.tripRequestFilter.date_of_journey = choice;
-	
-	const router = await sceneRouter(ctx);
-	await deleteKeyboardMessage(ctx);
+  ctx.session.enteredDate = choice;
+  ctx.session.tripRequestFilter.date_of_journey = choice;
 
-	const nextScene = router.next();
+  const router = await sceneRouter(ctx);
+  await deleteKeyboardMessage(ctx);
 
-	if (nextScene === null) {
-		return ctx.scene.exit();
-	}
+  const nextScene = router.next();
 
-	return ctx.scene.enter(nextScene);
+  if (nextScene === null) {
+    return ctx.scene.exit();
+  }
 
+  return ctx.scene.enter(nextScene);
 });

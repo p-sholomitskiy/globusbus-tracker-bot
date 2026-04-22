@@ -9,7 +9,7 @@ export type TripListItem = {
   availableTickets: number;
 };
 
-export type TripList = TripListItem[]
+export type TripList = TripListItem[];
 
 export type TripRequestFilter = {
   pickup: number | null;
