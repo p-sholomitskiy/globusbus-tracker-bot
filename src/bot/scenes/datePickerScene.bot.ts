@@ -24,13 +24,16 @@ datePickerScene.step(async (ctx) => {
 datePickerScene.wait('chooseDate').on('callback_query:data', async (ctx) => {
 	await ctx.answerCallbackQuery();
 	const choice = ctx.callbackQuery.data;
+	console.log(choice);
 
 	if (!isActualCallback(ctx)) {
 		await deleteKeyboardMessage(ctx);
 		return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
 	}
 
+	ctx.session.enteredDate = choice;
 	ctx.session.tripRequestFilter.date_of_journey = choice;
+	
 	const router = await sceneRouter(ctx);
 	await deleteKeyboardMessage(ctx);
 

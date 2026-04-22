@@ -4,14 +4,15 @@ import { sceneRouter } from './router.bot.js';
 import { getLocationListWithParams } from '../../db/locations.repo.js';
 import { LocationTablePointColumnValue } from '../../models/locations.model.js';
 import { createInlineKeyboardWithLocation } from '../components/inlineKeyboardLocationPick.bot.js';
-import { deleteKeyboardMessage, isActualCallback } from '../utils.bot.js';
+import { deleteKeyboardMessage, isActualCallback, sessionMessageHistory } from '../utils.bot.js';
 
 export const endLocationScene = new Scene<BotCustomContext>(BotSceneNameList.END_LOCATION_SCENE);
 
 endLocationScene.label(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
 
 endLocationScene.step(async (ctx) => {
-	await ctx.reply('Введите название конечного пункта');
+	const startSceneMessage =  await ctx.reply('Введите название конечного пункта');
+	sessionMessageHistory(ctx).addMessage(startSceneMessage.message_id);
 });
 
 endLocationScene.wait('startLocation').on('message:text', async (ctx) => {
@@ -30,6 +31,7 @@ endLocationScene.wait('startLocation').on('message:text', async (ctx) => {
 	if (foundLocations.length === 0) {
 		await ctx.reply('Ничего не найдено, попробуйте снова');
 	} else {
+		ctx.session.foundEndLocation = foundLocations;
 		const locationsKeyboard = createInlineKeyboardWithLocation(foundLocations);
 		const keyboardMessage = await ctx.reply('Найдены следующие пункты. Выберете пожалуйста', {
 			reply_markup: locationsKeyboard
@@ -56,7 +58,16 @@ endLocationScene.wait('chooseLocation').on('callback_query:data', async (ctx) =>
 		return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
 	} 
 
-	ctx.session.tripRequestFilter.destination = choice;
+	const chosenLocation = ctx.session.foundEndLocation
+		?.find(location => location.value === Number(choice));
+
+	if (chosenLocation === undefined) {
+		return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
+	}
+	
+	ctx.session.tripRequestFilter.destination = chosenLocation.value;
+	ctx.session.enteredEndLocation = chosenLocation.name;
+
 	const router = await sceneRouter(ctx);
 	await deleteKeyboardMessage(ctx);
 

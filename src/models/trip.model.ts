@@ -12,8 +12,8 @@ export type TripListItem = {
 export type TripList = TripListItem[]
 
 export type TripRequestFilter = {
-  pickup: string;
-  destination: string;
-  seats_limit: string;
-  date_of_journey: string;
+  pickup: number | null;
+  destination: number | null;
+  seats_limit: number | null;
+  date_of_journey: string | null;
 };
