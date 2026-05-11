@@ -26,40 +26,43 @@ export const isActualCallback = (ctx: BotCustomContext) => {
 };
 
 export const createConfirmDataMessage = (ctx: BotCustomContext) => {
-  const {
-    enteredStartLocation,
-    enteredEndLocation,
-    enteredDate,
-    enteredTrackInterval,
-  } = ctx.session;
+  const { enteredStartLocation, enteredEndLocation, enteredDate } = ctx.session;
 
-  return `${enteredStartLocation} => ${enteredEndLocation} | ${enteredDate} | ${enteredTrackInterval}`;
+  return `${enteredStartLocation} => ${enteredEndLocation} | ${enteredDate}`;
 };
 
 export const initSessionParamsBeforeFirstScene = (ctx: BotCustomContext) => {
   ctx.session.currentSceneIndex = 0;
   ctx.session.tripRequestFilter = {
-    pickup: null,
-    destination: null,
+    pickup: 0,
+    destination: 0,
     date_of_journey: '',
-    seats_limit: null,
+    seats_limit: 0,
   };
   ctx.session.sessionMessageHistory = [];
+
 };
 
 export const sessionMessageHistory = (ctx: BotCustomContext) => {
   const addMessage = (messageId: number | undefined) => {
+    console.log(ctx.session.sessionMessageHistory);
     if (messageId) {
       ctx.session.sessionMessageHistory.push(messageId);
-      console.log(ctx.session.sessionMessageHistory);
     }
   };
-  const clear = (): void => {
+  const clear = ():void => {
     ctx.session.sessionMessageHistory = [];
+  };
+  const deleteMessages = async ():Promise<void> => {
+    await ctx.deleteMessages(
+      ctx.session.sessionMessageHistory,
+    );
+    clear();
   };
   return {
     addMessage,
     clear,
+    deleteMessages,
   };
 };
 

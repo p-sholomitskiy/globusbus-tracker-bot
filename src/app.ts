@@ -8,13 +8,13 @@ bot.use(session({
   initial: (): SessionData => ({
     currentSceneIndex: 0,
     tripRequestFilter: {
-      pickup: null,
-      destination: null,
+      pickup: 0,
+      destination: 0,
       date_of_journey: '',
-      seats_limit: null,
+      seats_limit: 0,
     },
-    sessionMessageHistory: []
-  })
+    sessionMessageHistory: [],
+  }),
 }));
 
 bot.use(mainStage.manager());
@@ -22,7 +22,6 @@ bot.use(mainStage);
 
 bot.command('track', async (ctx) => {
   initSessionParamsBeforeFirstScene(ctx);
-  console.log(ctx.session);
   await ctx.scenes.enter(BotSceneNameList.START_LOCATION_SCENE);
 
   return;
