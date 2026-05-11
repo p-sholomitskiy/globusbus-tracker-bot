@@ -4,7 +4,7 @@ import { sceneRouter } from './router.bot.js';
 import { getLocationListWithParams } from '../../db/locations.repo.js';
 import { LocationTablePointColumnValue } from '../../models/locations.model.js';
 import { createInlineKeyboardWithLocation } from '../components/inlineKeyboardLocationPick.bot.js';
-import { botTextMessage, deleteKeyboardMessage, isActualCallback, sessionMessageHistory } from '../utils.bot.js';
+import { deleteKeyboardMessage, isActualCallback, sessionMessageHistory } from '../utils.bot.js';
 
 export const endLocationScene = new Scene<BotCustomContext>(
   BotSceneNameList.END_LOCATION_SCENE,
@@ -13,7 +13,10 @@ export const endLocationScene = new Scene<BotCustomContext>(
 endLocationScene.label(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
 
 endLocationScene.step(async (ctx) => {
-  const startSceneMessage = await botTextMessage(ctx, 'Введите название конечного пункта');
+  const startSceneMessage = await ctx.reply(
+    'Введите название конечного пункта',
+  );
+  sessionMessageHistory(ctx).addMessage(startSceneMessage.message_id);
 });
 
 endLocationScene.wait('startLocation').on('message:text', async (ctx) => {
@@ -25,16 +28,21 @@ endLocationScene.wait('startLocation').on('message:text', async (ctx) => {
   });
 
   if (foundLocations === null) {
-    const errorBotMessage = await botTextMessage(ctx, 'При поиске возникла ошибка. Попробуйте еще раз.');
+    await ctx.reply('При поиске возникла ошибка. Попробуйте еще раз.');
     return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
   }
 
   if (foundLocations.length === 0) {
-    const noResultMessage = await botTextMessage(ctx, 'Ничего не найдено, попробуйте снова');
+    await ctx.reply('Ничего не найдено, попробуйте снова');
   } else {
     ctx.session.foundEndLocation = foundLocations;
     const locationsKeyboard = createInlineKeyboardWithLocation(foundLocations);
-    const keyboardMessage = await botTextMessage(ctx, 'Найдены следующие пункты. Выберете пожалуйста', locationsKeyboard);
+    const keyboardMessage = await ctx.reply(
+      'Найдены следующие пункты. Выберете пожалуйста',
+      {
+        reply_markup: locationsKeyboard,
+      },
+    );
     ctx.session.keyboardMessageId = keyboardMessage.message_id;
     ctx.session.chatId = keyboardMessage.chat.id;
 

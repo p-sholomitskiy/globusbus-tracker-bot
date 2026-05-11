@@ -4,16 +4,16 @@ export type TripListItem = {
   date: string;
   startTime: string;
   endTime: string;
-  startLocation: number;
-  endLocation: number;
+  startLocation: string;
+  endLocation: string;
   availableTickets: number;
 };
 
 export type TripList = TripListItem[];
 
 export type TripRequestFilter = {
-  pickup: number;
-  destination: number;
-  seats_limit: number;
-  date_of_journey: string;
+  pickup: number | null;
+  destination: number | null;
+  seats_limit: number | null;
+  date_of_journey: string | null;
 };

@@ -3,8 +3,7 @@ import type { TripRequestFilter } from '../models/trip.model.js';
 
 export const getHtmlByFilter = async (filterPayload: TripRequestFilter) => {
   try {
-    const filterParams = new URLSearchParams();
-    Object.entries(filterPayload).forEach(([key, value]) => filterParams.append(key, String(value)));
+    const filterParams = new URLSearchParams(filterPayload);
     const response = await fetch(`${SUPERBUS_SEARCH_URL}?${filterParams}`);
     if (!response.ok) {
       throw new Error(`${response.status} ${response.statusText}`);

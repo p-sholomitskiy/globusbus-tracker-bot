@@ -1,6 +1,6 @@
 import type { Context, SessionFlavor } from 'grammy';
 import type { ScenesFlavor, ScenesSessionData } from 'grammy-scenes';
-import type { TripRequestFilter } from './trip.model.js';
+import type { TripList, TripRequestFilter } from './trip.model.js';
 import type { LocationList } from './locations.model.js';
 
 export type SessionData = ScenesSessionData & {
@@ -20,10 +20,10 @@ export type SessionData = ScenesSessionData & {
 export type BotCustomContext = Context & SessionFlavor<SessionData> & ScenesFlavor
 
 export enum BotSceneNameList {
-  START_LOCATION_SCENE = 'startLocationScene',
-  END_LOCATION_SCENE = 'endLocationScene',
-  DATE_PICKER_SCENE = 'datePickerScene',
-  TRACKING_INTERVAL_SCENE = 'trackingIntervalScene',
+    START_LOCATION_SCENE = 'startLocationScene',
+    END_LOCATION_SCENE = 'endLocationScene',
+    DATE_PICKER_SCENE = 'datePickerScene',
+    TRACKING_INTERVAL_SCENE = 'trackingIntervalScene',
 	CONFIRM_TRACK_DATA_SCENE = 'confirmTrackDataScene'
 }
 
@@ -54,23 +54,13 @@ export const BotRequestIntervals = [
 
 ];
 
-export enum BotKeyboardText {
-  CONFIRM = 'Подтвердить',
-  RESTART = 'Начать заново'
-}
-
-export enum BotKeyboardValues {
-  CONFIRM = 'confirm',
-  RESTART = 'restart',
-}
-
 export const BotInlineKeyboardConfirmItems = [
   {
-    text: BotKeyboardText.CONFIRM,
-    value: BotKeyboardValues.CONFIRM,
+    text: 'Подтвердить',
+    value: 'confirm',
   },
   {
-    text: BotKeyboardText.RESTART,
-    value: BotKeyboardValues.RESTART,
+    text: 'Начать заново',
+    value: 'restart',
   },
 ];
