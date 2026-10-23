@@ -1,3 +1,4 @@
 export enum RepositoryTables {
-    LOCATIONS = 'locations'
+    LOCATIONS = 'locations',
+    TRACKING_SUBSCRIPTION = 'tracking_subscriptions'
 }
