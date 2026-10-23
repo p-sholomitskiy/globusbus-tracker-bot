@@ -27,9 +27,16 @@ export const getLocationListWithParams = async (params: LocationTableRequestPara
     query = query.eq(LocationTableColumnsName.VALUE, params.value);
   }
 
+  if (params.orderBy) {
+    query = query.order(
+      params.orderBy,
+      { ascending: params.ascending ?? true },
+    );
+  }
+
   const { data, error } = await query;
   if (error) {
-    console.log(error);
+    console.error(error);
 
     return null;
   }

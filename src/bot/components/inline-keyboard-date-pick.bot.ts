@@ -7,7 +7,7 @@ const getFormattedDays = () => {
     const date = addDays(new Date(), i);
     return {
       label: format(date, 'dd.MM', { locale: ru }),
-      value: format(date, 'dd.MM.yyyy', { locale: ru })
+      value: format(date, 'dd.MM.yyyy', { locale: ru }),
     };
   });
   return weekDays;

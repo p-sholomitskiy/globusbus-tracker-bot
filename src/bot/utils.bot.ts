@@ -1,5 +1,7 @@
 import type { InlineKeyboard } from 'grammy';
-import type { BotCustomContext } from '../models/bot.models.js';
+import { LOCATION_MENU_PAGE_SIZE, type BotCustomContext } from '../models/bot.models.js';
+import type { LocationList } from '../models/locations.model.js';
+import { updateLocationKeyboard } from './components/inline-keyboard-location-pick.bot.js';
 
 export const deleteKeyboardMessage = async (
   ctx: BotCustomContext,
@@ -19,21 +21,26 @@ export const deleteKeyboardMessage = async (
   }
 };
 
-export const isActualCallback = (ctx: BotCustomContext) => {
+export const isActualCallback = (ctx: BotCustomContext): boolean => {
+  const messageId = ctx.callbackQuery?.message?.message_id;
+
   return (
-    ctx.callbackQuery?.message?.message_id === ctx.session.keyboardMessageId
+    messageId !== undefined &&
+    messageId === ctx.session.keyboardMessageId
   );
 };
 
 export const createConfirmDataMessage = (ctx: BotCustomContext) => {
-  const {
-    enteredStartLocation,
-    enteredEndLocation,
-    enteredDate,
-    enteredTrackInterval,
-  } = ctx.session;
+  // const {
+  //   enteredStartLocation,
+  //   enteredEndLocation,
+  //   enteredDate,
+  //   enteredTrackInterval,
+  // } = ctx.session;
 
-  return `${enteredStartLocation} => ${enteredEndLocation} | ${enteredDate} | ${enteredTrackInterval}`;
+  // return `${enteredStartLocation} => ${enteredEndLocation} | ${enteredDate} | ${enteredTrackInterval}`;
+  const { selectedOptions, tripRequestFilter, tripTimeList } = ctx.session;
+  return `Проверьте подписку:\n🚌 ${selectedOptions.startLocation} → ${selectedOptions.endLocation}\nДата: ${tripRequestFilter.date_of_journey}\nВремя: ${tripTimeList.selected.join(', ')}\nМест: ${tripRequestFilter.seats_limit}`;
 };
 
 export const initSessionParamsBeforeFirstScene = (ctx: BotCustomContext) => {
@@ -42,16 +49,30 @@ export const initSessionParamsBeforeFirstScene = (ctx: BotCustomContext) => {
     pickup: null,
     destination: null,
     date_of_journey: '',
-    seats_limit: null,
+    seats_limit: 1,
+  };
+  ctx.session.locationMenuPagination = {
+    locationList: [],
+    currentPage: 0,
+    totalPageCount: 1,
+  };
+  ctx.session.selectedOptions = {
+    startLocation: '',
+    endLocation: '',
+    date: '',
+    time: [],
   };
   ctx.session.sessionMessageHistory = [];
+  ctx.session.tripTimeList = {
+    selected: [],
+    fetched: [],
+  };
 };
 
 export const sessionMessageHistory = (ctx: BotCustomContext) => {
   const addMessage = (messageId: number | undefined) => {
     if (messageId) {
       ctx.session.sessionMessageHistory.push(messageId);
-      console.log(ctx.session.sessionMessageHistory);
     }
   };
   const clear = (): void => {
@@ -69,8 +90,39 @@ export const botTextMessage = async (
   keyboard?: InlineKeyboard,
 ) => {
   const message = await ctx.reply(textMessage, { reply_markup: keyboard });
-  console.log(message.message_id);
   sessionMessageHistory(ctx).addMessage(message.message_id);
 
   return message;
+};
+
+export const getTotalLocationPageCount = (locationList: LocationList): number => {
+  return Math.ceil(locationList.length / LOCATION_MENU_PAGE_SIZE);
+};
+
+export const getPaginatedPage = (locationList: LocationList, currentPageNumber: number) => {
+  const start = currentPageNumber * LOCATION_MENU_PAGE_SIZE;
+
+  return locationList.slice(start, start + LOCATION_MENU_PAGE_SIZE);
+};
+
+export const changePage = async (
+  ctx: BotCustomContext,
+  locationList: LocationList,
+  direction: 'prev' | 'next',
+) => {
+  const totalPageCount = ctx.session.locationMenuPagination?.totalPageCount ?? 1;
+  const currentPage = ctx.session.locationMenuPagination?.currentPage ?? 0;
+
+  const nextPage = direction === 'prev' ? currentPage - 1 : currentPage + 1;
+
+  if (nextPage < 0 || nextPage >= totalPageCount) {
+    return;
+  }
+
+  ctx.session.locationMenuPagination.currentPage = nextPage;
+
+  await updateLocationKeyboard(
+    ctx,
+    locationList,
+  );
 };

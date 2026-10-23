@@ -23,5 +23,7 @@ export type LocationTableRequestParams = {
     id?: number,
     name?: string,
     point?: LocationTablePointColumnValue,
-    value?: number
+    value?: number,
+    orderBy?: LocationTableColumnsName,
+    ascending?: boolean
 }

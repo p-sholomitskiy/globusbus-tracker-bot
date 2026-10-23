@@ -1,12 +1,12 @@
 import { Scene } from 'grammy-scenes';
 import { BotInlineKeyboardCommands, BotSceneNameList, type BotCustomContext } from '../../models/bot.models.js';
 import { sceneRouter } from './router.bot.js';
-import { createInlineKeyboardWithIntervals } from '../components/inlineKeyboardIntervalPick.bot.js';
+import { createInlineKeyboardWithIntervals } from '../components/inline-keyboard-interval-pick.bot.js';
 import { deleteKeyboardMessage, isActualCallback } from '../utils.bot.js';
 
 export const trackingIntervalScene = new Scene<BotCustomContext>(BotSceneNameList.TRACKING_INTERVAL_SCENE);
 
-trackingIntervalScene.label(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
+trackingIntervalScene.label(BotInlineKeyboardCommands.search_again.callbackData);
 
 trackingIntervalScene.step(async (ctx) => {
   const intervalsKeyboard = createInlineKeyboardWithIntervals();
@@ -26,7 +26,7 @@ trackingIntervalScene.wait('chooseInterval').on('callback_query:data', async (ct
 
   if (!isActualCallback(ctx)) {
     await deleteKeyboardMessage(ctx);
-    return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
+    return ctx.scene.goto(BotInlineKeyboardCommands.search_again.callbackData);
   }
 
   const router = await sceneRouter(ctx);
@@ -36,10 +36,8 @@ trackingIntervalScene.wait('chooseInterval').on('callback_query:data', async (ct
 
   if (Number.isNaN(interval)) {
     await ctx.reply('Некорректный интервал. Попробуйте снова.');
-    return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
+    return ctx.scene.goto(BotInlineKeyboardCommands.search_again.callbackData);
   }
-
-  ctx.session.enteredTrackInterval = interval;
 
   const nextScene = router.next();
 

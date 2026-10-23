@@ -1,19 +1,20 @@
 import { Scene } from 'grammy-scenes';
 import { BotInlineKeyboardCommands, BotSceneNameList, type BotCustomContext } from '../../models/bot.models.js';
 import { sceneRouter } from './router.bot.js';
-import { createInlineKeyboardWithDates } from '../components/inlineKeyboardDatePick.bot.js';
+import { createInlineKeyboardWithDates } from '../components/inline-keyboard-date-pick.bot.js';
 import { deleteKeyboardMessage, isActualCallback } from '../utils.bot.js';
+import { BOT_MESSAGES } from '../messages.bot.js';
 
 export const datePickerScene = new Scene<BotCustomContext>(
   BotSceneNameList.DATE_PICKER_SCENE,
 );
 
-datePickerScene.label(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
+datePickerScene.label(BotInlineKeyboardCommands.search_again.callbackData);
 
 datePickerScene.step(async (ctx) => {
   const datesKeyboard = createInlineKeyboardWithDates();
 
-  const keyboardMessage = await ctx.reply('Выберите дату', {
+  const keyboardMessage = await ctx.reply(BOT_MESSAGES.SELECT_DATE, {
     reply_markup: datesKeyboard,
   });
 
@@ -25,19 +26,19 @@ datePickerScene.step(async (ctx) => {
 
 datePickerScene.wait('chooseDate').on('callback_query:data', async (ctx) => {
   await ctx.answerCallbackQuery();
-  const choice = ctx.callbackQuery.data;
-  console.log(choice);
+  const selectedButtonData = ctx.callbackQuery.data;
 
   if (!isActualCallback(ctx)) {
     await deleteKeyboardMessage(ctx);
-    return ctx.scene.goto(BotInlineKeyboardCommands.SEARCH_AGAIN.callBackData);
+    return ctx.scene.goto(BotInlineKeyboardCommands.search_again.callbackData);
   }
 
-  ctx.session.enteredDate = choice;
-  ctx.session.tripRequestFilter.date_of_journey = choice;
+  ctx.session.selectedOptions.date = selectedButtonData;
+  ctx.session.tripRequestFilter.date_of_journey = selectedButtonData;
 
   const router = await sceneRouter(ctx);
-  await deleteKeyboardMessage(ctx);
+
+  await ctx.editMessageText(`${BOT_MESSAGES.CHOSEN_DATE}: ${selectedButtonData}`);
 
   const nextScene = router.next();
 
