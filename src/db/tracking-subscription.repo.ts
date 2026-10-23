@@ -5,7 +5,10 @@ import { supabase } from './client.repo.js';
 
 export const getTrackingSubscriptionById = async (id: number, chatId: number): Promise<TrackingSubscriptionListItem | null> => {
   const { data: subscription, error } = await supabase.from(RepositoryTables.TRACKING_SUBSCRIPTION)
-    .select('*').eq('id', id).eq('chat_id', chatId).maybeSingle();
+    .select('*')
+    .eq('id', id)
+    .eq('chat_id', chatId)
+    .maybeSingle();
   if (error) throw error;
   return subscription;
 };
@@ -14,8 +17,12 @@ export const changeTrackingSubscriptionStatus = async (
   id: number, chatId: number, expectedStatus: string, nextStatus: string,
 ): Promise<TrackingSubscriptionListItem | null> => {
   const { data: subscription, error } = await supabase.from(RepositoryTables.TRACKING_SUBSCRIPTION)
-    .update({ status: nextStatus }).eq('id', id).eq('chat_id', chatId)
-    .eq('status', expectedStatus).select('*').maybeSingle();
+    .update({ status: nextStatus })
+    .eq('id', id)
+    .eq('chat_id', chatId)
+    .eq('status', expectedStatus)
+    .select('*')
+    .maybeSingle();
   if (error) throw error;
   return subscription;
 };

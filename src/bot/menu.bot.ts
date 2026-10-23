@@ -10,9 +10,12 @@ export const MENU_BUTTON = {
 } as const;
 
 export const createMainMenu = (): Keyboard => new Keyboard()
-  .text(MENU_BUTTON.track).row()
-  .text(MENU_BUTTON.subscriptions).text(MENU_BUTTON.help)
-  .resized().persistent();
+  .text(MENU_BUTTON.track)
+  .row()
+  .text(MENU_BUTTON.subscriptions)
+  .text(MENU_BUTTON.help)
+  .resized()
+  .persistent();
 
 export const BOT_COMMAND_LIST = [
   { command: 'start', description: 'Главное меню' },

@@ -1,6 +1,6 @@
 import type { Context, SessionFlavor } from 'grammy';
 import type { ScenesFlavor, ScenesSessionData } from 'grammy-scenes';
-import type { TripList, TripRequestFilter } from './trip.model.js';
+import type { TripRequestFilter } from './trip.model.js';
 import type { LocationList } from './locations.model.js';
 
 export const LOCATION_MENU_PAGE_SIZE = 9;
