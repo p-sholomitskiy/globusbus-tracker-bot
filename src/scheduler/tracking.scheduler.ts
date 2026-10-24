@@ -29,7 +29,8 @@ export const startTrackingScheduler = (): void => {
       const trackingSubscriptionList = await getTrackingSubscriptionList({});
       if (!trackingSubscriptionList) statistics.errorCount++;
       subscriptionCount = (trackingSubscriptionList ?? []).filter(subscription =>
-        subscription.status === TrackingSubscriptionStatus.ACTIVE || subscription.status === TrackingSubscriptionStatus.PENDING,
+        subscription.status === TrackingSubscriptionStatus.ACTIVE
+          && !isTrackingSubscriptionExpired(subscription) && !!subscription.time_list?.length,
       ).length;
       const searchTripListMap = new Map<string, TripListItem[] | null>();
       for (const subscription of trackingSubscriptionList ?? []) {
@@ -54,7 +55,7 @@ export const startTrackingScheduler = (): void => {
     } finally {
       const nextDelayMs = Math.max(TRACKING_SCHEDULER_DELAY, searchBackoff.getRemainingDelayMs());
       const nextCheckText = isSchedulerStarted ? `через ${(nextDelayMs / 1000).toFixed(1)} с` : 'остановлена';
-      console.log(`Проверка: подписок ${subscriptionCount}, уникальных поисков ${statistics.searchCount}, уведомлений ${statistics.notificationCount}, ошибок ${statistics.errorCount}, пропущено поисков из-за паузы ${statistics.skippedSearchCount}, длительность ${((performance.now() - startedAt) / 1000).toFixed(1)} с, следующая проверка ${nextCheckText}`);
+      if (subscriptionCount > 0) console.log(`Проверка: подписок ${subscriptionCount}, уникальных поисков ${statistics.searchCount}, уведомлений ${statistics.notificationCount}, ошибок ${statistics.errorCount}, пропущено поисков из-за паузы ${statistics.skippedSearchCount}, длительность ${((performance.now() - startedAt) / 1000).toFixed(1)} с, следующая проверка ${nextCheckText}`);
       scheduleNextPass();
     }
   };
