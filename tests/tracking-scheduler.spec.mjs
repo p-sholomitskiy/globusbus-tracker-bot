@@ -47,3 +47,39 @@ test('stop cancels queued pass, waits for current request, and skips remaining s
     context.mock.timers.reset();
   }
 });
+
+test('idle and paused passes stay quiet; active tracking emits summary; database errors remain visible', async (context) => {
+  context.mock.timers.enable({ apis: ['setTimeout'] });
+  const originalFrom = supabase.from;
+  const originalFetch = globalThis.fetch;
+  const logList = [];
+  const errorList = [];
+  context.mock.method(console, 'log', (...args) => { logList.push(args); });
+  context.mock.method(console, 'error', (...args) => { errorList.push(args); });
+  let subscriptionList = [];
+  let databaseError = null;
+  supabase.from = () => ({ select: async () => ({ data: databaseError ? null : subscriptionList, error: databaseError }) });
+  globalThis.fetch = async () => ({ ok: true, text: async () => '<html></html>' });
+  const subscription = { id: 1, chat_id: 123, pickup: 139, destination: 34,
+    date_of_journey: '24.10.2099', seats_limit: 1, time_list: ['7:40'] };
+  try {
+    startTrackingScheduler();
+    for (const status of [null, 'pending', 'canceled', 'expired', 'active']) {
+      subscriptionList = status ? [{ ...subscription, status }] : [];
+      context.mock.timers.tick(5000);
+      await setImmediate();
+      assert.equal(logList.length, status === 'active' ? 1 : 0);
+    }
+    assert.match(logList[0][0], /подписок 1, уникальных поисков 1/);
+    databaseError = { message: 'database unavailable' };
+    context.mock.timers.tick(5000);
+    await setImmediate();
+    assert.equal(logList.length, 1);
+    assert.equal(errorList.length, 1);
+  } finally {
+    await stopTrackingScheduler();
+    supabase.from = originalFrom;
+    globalThis.fetch = originalFetch;
+    context.mock.timers.reset();
+  }
+});
